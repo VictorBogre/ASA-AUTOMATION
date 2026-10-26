@@ -12,8 +12,8 @@ from netmiko import ConnectHandler
 ERRORS = ("ERROR:", "Invalid input", "% ")
 
 
-def render(env, name, ctx):
-    text = env.get_template(name).render(ctx=ctx)
+def render(env, name, ctx, system_asn=None):
+    text = env.get_template(name).render(ctx=ctx, system_asn=system_asn)
     return [l for l in text.splitlines() if l.strip()]
 
 
@@ -39,7 +39,7 @@ def main():
     for ctx in cfg["contexts"]:
         plan.append((ctx["name"], "system", render(env, "system_subif.j2", ctx)))
         plan.append((ctx["name"], "ctx", render(env, "context_if.j2", ctx)
-                     + (render(env, "context_bgp.j2", ctx) if ctx.get("bgp") else [])))
+                     + (render(env, "context_bgp.j2", ctx, cfg["asa"]["bgp_asn"]) if ctx.get("bgp") else [])))
 
     if args.render_only:
         for name, where, cmds in plan:

@@ -44,6 +44,7 @@ To keep the password out of your shell history, use `read -rs ASA_PASS && export
 asa:
   host: 10.0.0.1
   device_type: cisco_asa
+  bgp_asn: 65100                    # unique system-wide ASN (router bgp)
 contexts:
   - name: CTX-A
     subinterfaces:
@@ -55,7 +56,7 @@ contexts:
         ip: 192.0.2.2
         mask: 255.255.255.0
     bgp:                            # optional
-      asn: 65001
+      asn: 65001                    # per-context ASN, used as neighbor local-as
       router_id: 192.0.2.2
       neighbors:
         - ip: 192.0.2.1
@@ -64,6 +65,12 @@ contexts:
       networks:
         - {ip: 10.10.0.0, mask: 255.255.0.0}
 ```
+
+## BGP ASN model
+
+- `asa.bgp_asn` is the single ASN for the whole ASA. Every context gets `router bgp <bgp_asn>`.
+- `bgp.asn` in each context is that context's own ASN. It is applied to every neighbor as `neighbor <ip> local-as <asn> no-prepend replace-as`, so peers see the context ASN instead of the system one.
+- To use a different local ASN for one neighbor, add `local_as:` to that neighbor in the YAML.
 
 ## Run
 

@@ -1,6 +1,7 @@
 asa:
   host: 10.0.0.1
   device_type: cisco_asa
+  bgp_asn: 65100        # unique system-wide ASN used in 'router bgp'
 contexts:
   - name: CTX-A
     subinterfaces:
@@ -12,7 +13,7 @@ contexts:
         ip: 192.0.2.2
         mask: 255.255.255.0
     bgp:
-      asn: 65001
+      asn: 65001            # per-context ASN, applied as neighbor local-as
       router_id: 192.0.2.2
       neighbors:
         - ip: 192.0.2.1

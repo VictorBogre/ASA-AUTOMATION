@@ -1,8 +1,9 @@
-router bgp {{ ctx.bgp.asn }}
+router bgp {{ system_asn }}
  bgp router-id {{ ctx.bgp.router_id }}
  address-family ipv4 unicast
 {% for n in ctx.bgp.neighbors %}
   neighbor {{ n.ip }} remote-as {{ n.remote_as }}
+  neighbor {{ n.ip }} local-as {{ n.local_as | default(ctx.bgp.asn) }} no-prepend replace-as
 {% if n.password %}
   neighbor {{ n.ip }} password {{ n.password }}
 {% endif %}
