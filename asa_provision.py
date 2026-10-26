@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Create subinterfaces and BGP on a multi-context Cisco ASA from a YAML file."""
 import argparse
+import getpass
 import os
 import sys
 
@@ -46,12 +47,16 @@ def main():
             print("\n".join(cmds))
         return
 
+    username = os.environ.get("ASA_USER") or input("ASA username: ")
+    password = os.environ.get("ASA_PASS") or getpass.getpass("ASA password: ")
+    secret = os.environ.get("ASA_ENABLE") or getpass.getpass("Enable password (blank = same as login): ") or password
+
     conn = ConnectHandler(
         host=cfg["asa"]["host"],
         device_type=cfg["asa"].get("device_type", "cisco_asa"),
-        username=os.environ["ASA_USER"],
-        password=os.environ["ASA_PASS"],
-        secret=os.environ.get("ASA_ENABLE", os.environ["ASA_PASS"]),
+        username=username,
+        password=password,
+        secret=secret,
     )
     try:
         conn.enable()
