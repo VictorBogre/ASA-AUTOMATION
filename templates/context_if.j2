@@ -1,0 +1,7 @@
+{% for s in ctx.subinterfaces %}
+interface {{ s.mapped_name or (s.parent ~ '.' ~ s.id) }}
+ nameif {{ s.nameif }}
+ security-level {{ s.security_level }}
+ ip address {{ s.ip }} {{ s.mask }}
+ no shutdown
+{% endfor %}

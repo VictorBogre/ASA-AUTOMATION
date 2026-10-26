@@ -1,0 +1,14 @@
+router bgp {{ ctx.bgp.asn }}
+ bgp router-id {{ ctx.bgp.router_id }}
+ address-family ipv4 unicast
+{% for n in ctx.bgp.neighbors %}
+  neighbor {{ n.ip }} remote-as {{ n.remote_as }}
+{% if n.password %}
+  neighbor {{ n.ip }} password {{ n.password }}
+{% endif %}
+  neighbor {{ n.ip }} activate
+{% endfor %}
+{% for net in ctx.bgp.networks | default([]) %}
+  network {{ net.ip }} mask {{ net.mask }}
+{% endfor %}
+ exit-address-family

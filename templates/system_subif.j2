@@ -1,0 +1,10 @@
+{% for s in ctx.subinterfaces %}
+interface {{ s.parent }}.{{ s.id }}
+ vlan {{ s.id }}
+ no shutdown
+{% endfor %}
+context {{ ctx.name }}
+{% for s in ctx.subinterfaces %}
+ allocate-interface {{ s.parent }}.{{ s.id }}{% if s.mapped_name %} {{ s.mapped_name }}{% endif %}
+
+{% endfor %}
